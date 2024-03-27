@@ -1,14 +1,15 @@
-from flask import Flask, request, jsonify, send_file
+from flask import Flask, request, jsonify, send_file, render_template
 from PIL import Image
 import numpy as np
 import tensorflow as tf
 from keras.preprocessing import image
 from flask_cors import CORS
-import LimeExplainer 
-import GradCAMExplainer
+import app.LimeExplainer as LimeExplainer 
+import app.GradCAMExplainer as GradCAMExplainer
 import traceback
 from flask_swagger_ui import get_swaggerui_blueprint
 from urllib.request import urlretrieve
+from pathlib import Path
 
 app = Flask(__name__)
 CORS(app) 
@@ -34,10 +35,15 @@ swaggerui_blueprint = get_swaggerui_blueprint(
 app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
 
 
-# Define the URL of the model file in Firebase Storage
-model_url = 'https://firebasestorage.googleapis.com/v0/b/api-model-2f5ae.appspot.com/o/model_2.h5?alt=media&token=https://firebasestorage.googleapis.com/v0/b/api-model-2f5ae.appspot.com/o/model_2.h5?alt=media&token=c1883887-ea06-4373-a10e-a539f1cb82ac'
+local_model_path = 'model_2.h5'
 
-local_model_path, _ = urlretrieve(model_url, "model_2.h5")
+if not Path(local_model_path).is_file():
+    print("The model file does not exist. Loading file!")
+    # URL of the model file in Firebase Storage
+    model_url = 'https://firebasestorage.googleapis.com/v0/b/api-model-2f5ae.appspot.com/o/model_2.h5?alt=media&token=https://firebasestorage.googleapis.com/v0/b/api-model-2f5ae.appspot.com/o/model_2.h5?alt=media&token=c1883887-ea06-4373-a10e-a539f1cb82ac'
+
+    local_model_path, _ = urlretrieve(model_url, "model_2.h5")
+    print("Model file loaded.")
 
 # Load the model from the local file path
 model = tf.keras.models.load_model(local_model_path)
@@ -53,6 +59,11 @@ def preprocess_image(image_path):
     img = image.load_img(image_path, target_size=(600, 600))
     img = np.expand_dims(img, axis=0)
     return img
+
+## default route for the home page
+@app.route('/')
+def home():
+    return render_template('index.html')
 
 # predict endpoint
 @app.route('/predict', methods=['POST'])
@@ -130,7 +141,6 @@ def gradcamExplanationMask():
         return jsonify({'error': str(e)})
 
 
-
-# Run the Flask app
-if __name__ == '__main__':
-    app.run(debug=True)
+# # Run the Flask app
+# if __name__ == '__main__':
+#     app.run(debug=True)

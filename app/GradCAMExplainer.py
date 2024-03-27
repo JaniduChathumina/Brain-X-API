@@ -1,6 +1,6 @@
-from OmniXAI.omnixai.data.image import Image
-from OmniXAI.omnixai.preprocessing.image import Resize
-from OmniXAI.omnixai.explainers.vision.specific.gradcam import GradCAM
+from app.OmniXAI.omnixai.data.image import Image
+from app.OmniXAI.omnixai.preprocessing.image import Resize
+from app.OmniXAI.omnixai.explainers.vision.specific.gradcam import GradCAM
 # from omnixai.data.image import Image
 # from omnixai.preprocessing.image import Resize
 # from omnixai.explainers.vision.specific.gradcam import GradCAM
