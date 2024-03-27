@@ -1,0 +1,150 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "BrainX API - Diagnose Brain Tumors",
+    "version": "1.0.0",
+    "description": "An all-inclusive API which can be used for brain tumor diagnosis and explain the reasonings behind the given predictions. \n\n  - Classify over 14 different tumor types (Astrocitoma, Carcinoma, Ependimoma, Ganglioglioma, Germinoma, Glioblastoma, Granuloma, Meduloblastoma, Meningioma, Neurocitoma, Oligodendroglioma, Papiloma, Schwannoma, Tuberculoma) against normal brain structures.\n  - Get explainations on the predictions with Grad-CAM & LIME to understand reasonings behind the output.\n"
+  },
+  "paths": {
+    "/predict": {
+      "post": {
+        "summary": "Predict the class label of a brain tumor",
+        "description": "This endpoint allows you to predict the class label of a brain tumor using an uploaded MRI image.\nAfter uploading the image, the API returns the predicted class label along with the confidence level of the prediction.\n- Supported tumour types: Astrocitoma, Carcinoma, Ependimoma, Ganglioglioma, Germinoma, Glioblastoma, Granuloma, Meduloblastoma, Meningioma, Neurocitoma, Oligodendroglioma, Papiloma, Schwannoma, Tuberculoma, and NORMAL\n",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful prediction",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "prediction": {
+                      "type": "string",
+                      "description": "Predicted class label"
+                    },
+                    "confidence": {
+                      "type": "string",
+                      "description": "Confidence level of prediction"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Predict Brain Tumours"
+        ]
+      }
+    },
+    "/limeExplanationText": {
+      "get": {
+        "summary": "Generate explanation text for prediction using LIME",
+        "description": "This endpoint generates explanation text for the prediction using LIME (Local Interpretable Model-agnostic Explanations). \nIt provides insights into how the model arrived at a particular prediction, enhancing interpretability.\nTo use this endpoint, first execute the Predict Brain Tumours operation (/predict).\n",
+        "responses": {
+          "200": {
+            "description": "Successful generation of explanation text",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "explanation": {
+                      "type": "string",
+                      "description": "Explanation text for prediction"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "LIME Explanation Score Values"
+        ]
+      }
+    },
+    "/limeExplanationImage": {
+      "get": {
+        "summary": "Get explanation image for prediction using LIME",
+        "description": "This endpoint retrieves an explanation image for the prediction using LIME (Local Interpretable Model-agnostic Explanations). \nThe image provides visual representations of the features influencing the prediction, aiding in understanding.\nTo use this endpoint, first execute the Predict Brain Tumours operation (/predict) and LIME Explanation Score Values operation (/limeExplanationText).\n",
+        "responses": {
+          "200": {
+            "description": "Successful generation of explanation image",
+            "content": {
+              "image/jpeg": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "LIME Explanation Image"
+        ]
+      }
+    },
+    "/gradcamExplanation": {
+      "get": {
+        "summary": "Generate Grad-CAM explanation for prediction",
+        "description": "This endpoint generates a Grad-CAM (Gradient-weighted Class Activation Mapping) explanation for the prediction. \nGrad-CAM highlights the regions of the MRI image that are influential in making the prediction.\nTo use this endpoint, first execute the Predict Brain Tumours operation (/predict).\n",
+        "responses": {
+          "200": {
+            "description": "Successful generation of Grad-CAM explanation",
+            "content": {
+              "image/jpeg": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Grad-CAM Explanation Heatmap"
+        ]
+      }
+    },
+    "/gradcamExplanationMask": {
+      "get": {
+        "summary": "Get Grad-CAM explanation mask",
+        "description": "This endpoint retrieves the Grad-CAM explanation mask associated with the prediction. \nThe mask visualizes the areas of the MRI image that contribute most to the prediction.\nTo use this endpoint, first execute the Predict Brain Tumours operation (/predict) and Grad-CAM Explanation Heatmap operation (/gradcamExplanation).\n",
+        "responses": {
+          "200": {
+            "description": "Successful retrieval of Grad-CAM explanation mask",
+            "content": {
+              "image/jpeg": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Grad-CAM Explanation Heatmap Mask"
+        ]
+      }
+    }
+  }
+}

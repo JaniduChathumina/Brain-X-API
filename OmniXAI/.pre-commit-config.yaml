@@ -1,0 +1,7 @@
+repos:
+- repo: https://github.com/johann-petrak/licenseheaders.git
+  rev: 'v0.8.8'
+  hooks:
+    - id: licenseheaders
+      args: ["-t", ".copyright.tmpl", "-cy", "-o", "salesforce.com, inc.",
+             "-E", ".py", "-x", "docs/conf.py", "-f"]
