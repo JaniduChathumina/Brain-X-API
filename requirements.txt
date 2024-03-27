@@ -15,5 +15,5 @@ Werkzeug==2.2.2
 dill==0.3.8
 shap==0.45.0
 shapely==2.0.1
-torch==2.2.1
-torchvision==0.17.1
+typing_extensions==4.10.0
+jedi==0.18.1
