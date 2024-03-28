@@ -1,9 +1,9 @@
-from app.OmniXAI.omnixai.data.image import Image
-from app.OmniXAI.omnixai.preprocessing.image import Resize
-from app.OmniXAI.omnixai.explainers.vision.specific.gradcam import GradCAM
-# from omnixai.data.image import Image
-# from omnixai.preprocessing.image import Resize
-# from omnixai.explainers.vision.specific.gradcam import GradCAM
+# from app.OmniXAI.omnixai.data.image import Image
+# from app.OmniXAI.omnixai.preprocessing.image import Resize
+# from app.OmniXAI.omnixai.explainers.vision.specific.gradcam import GradCAM
+from omnixai.data.image import Image
+from omnixai.preprocessing.image import Resize
+from omnixai.explainers.vision.specific.gradcam import GradCAM
 from PIL import Image as PilImage
 import tensorflow as tf
 import numpy as np
@@ -44,12 +44,18 @@ class GradCAMExplainer:
 
         #plot method modified locally
         #call plot method to get the heatmap and score map
-        heatmap, score = explanations.plot(index=0, class_names=class_list) 
+        # heatmap, score = explanations.plot(index=0, class_names=class_list) 
+
+        # heatmap[0].savefig('heatmap.jpeg', dpi=600, bbox_inches='tight')
+        # score[0].savefig('score.jpeg', dpi=600, bbox_inches='tight')
+
+        # return heatmap[0], score[0]
+
+        heatmap = explanations.plot(index=0, class_names=class_list) 
 
         heatmap[0].savefig('heatmap.jpeg', dpi=600, bbox_inches='tight')
-        score[0].savefig('score.jpeg', dpi=600, bbox_inches='tight')
 
-        return heatmap[0], score[0]
+        return heatmap[0]
 
 
 

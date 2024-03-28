@@ -129,16 +129,16 @@ def gradcamExplanation():
         print(traceback.format_exc())
         return jsonify({'error': str(e)})
     
-@app.route('/gradcamExplanationMask', methods=['GET'])
-def gradcamExplanationMask():
-    try:
-        score_image_path = 'score.jpeg'
-        mask_response = send_file(score_image_path, mimetype='image/jpeg')
-        return mask_response
+# @app.route('/gradcamExplanationMask', methods=['GET'])
+# def gradcamExplanationMask():
+#     try:
+#         score_image_path = 'score.jpeg'
+#         mask_response = send_file(score_image_path, mimetype='image/jpeg')
+#         return mask_response
 
-    except Exception as e:
-        print(traceback.format_exc())
-        return jsonify({'error': str(e)})
+#     except Exception as e:
+#         print(traceback.format_exc())
+#         return jsonify({'error': str(e)})
 
 
 # # Run the Flask app
