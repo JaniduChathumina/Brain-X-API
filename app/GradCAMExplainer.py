@@ -53,7 +53,7 @@ class GradCAMExplainer:
 
         heatmap = explanations.plot(index=0, class_names=class_list) 
 
-        heatmap[0].savefig('heatmap.jpeg', dpi=600, bbox_inches='tight')
+        heatmap[0].savefig('app/heatmap.jpeg', dpi=600, bbox_inches='tight')
 
         return heatmap[0]
 

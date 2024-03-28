@@ -20,7 +20,7 @@ CORS(app)
 
 
 SWAGGER_URL = '/api/docs'  # URL for Swagger UI
-API_URL = '/static/docs.json'  # URL for API documentation
+API_URL = 'app/static/docs.json'  # URL for API documentation
 
 # Configuring Swagger UI to point API documentation
 swaggerui_blueprint = get_swaggerui_blueprint(
@@ -71,7 +71,7 @@ def predict():
     try:
         # Get the image file from the request
         file = request.files['file']
-        img_path = 'inputImage.jpeg'
+        img_path = 'app/inputImage.jpeg'
         file.save(img_path)
 
         # img_path = 'astrocitoma.jpeg'
@@ -97,7 +97,7 @@ def predict():
 def limeExplanationText():
     try:
         lime_explainer = LimeExplainer.LimeExplainer()
-        img_path = 'inputImage.jpeg' 
+        img_path = 'app/inputImage.jpeg' 
         fig, output_data = lime_explainer.explain_fn(img_path, model)
         return jsonify({'explanation':output_data})
 
@@ -118,9 +118,9 @@ def limeExplanationImage():
 @app.route('/gradcamExplanation', methods=['GET'])
 def gradcamExplanation():
     try:
-        img_path = 'inputImage.jpeg'
+        img_path = 'app/inputImage.jpeg'
         gradcam_explainer = GradCAMExplainer.GradCAMExplainer()
-        heatmap, score = gradcam_explainer.explain_fn(img_path, most_likely_class, model, class_list)
+        heatmap = gradcam_explainer.explain_fn(img_path, most_likely_class, model, class_list)
         heatmap_image_path = 'heatmap.jpeg'
         heatmap_response = send_file(heatmap_image_path, mimetype='image/jpeg')
         return heatmap_response

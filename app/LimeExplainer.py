@@ -71,7 +71,7 @@ class LimeExplainer:
         # plt.show()
 
         # Saving the figure with high quality
-        fig.savefig('output_lime_image.jpeg', dpi=600, bbox_inches='tight')
+        fig.savefig('app/output_lime_image.jpeg', dpi=600, bbox_inches='tight')
 
         # Return image and JSON object
         return fig, output_data
