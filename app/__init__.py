@@ -36,7 +36,7 @@ CORS(app)
 # app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
 
 
-local_model_path = 'model_2.pkl'
+local_model_path = 'model_2.joblib'
 
 # if not Path(local_model_path).is_file():
 #     print("The model file does not exist. Loading file!")
@@ -49,8 +49,11 @@ local_model_path = 'model_2.pkl'
 # # Load the model from the local file path
 # model = tf.keras.models.load_model(local_model_path)
 
-with open(local_model_path, 'rb') as f:
-    model = pickle.load(f)
+# with open(local_model_path, 'rb') as f:
+#     model = pickle.load(f)
+
+from joblib import load
+model = load(local_model_path)
 
 
 # Loading the pre-trained model
