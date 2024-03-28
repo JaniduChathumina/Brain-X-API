@@ -10,6 +10,7 @@ import traceback
 from flask_swagger_ui import get_swaggerui_blueprint
 from urllib.request import urlretrieve
 from pathlib import Path
+import pickle
 
 app = Flask(__name__)
 CORS(app) 
@@ -35,7 +36,7 @@ CORS(app)
 # app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
 
 
-local_model_path = 'app/model_2.h5'
+local_model_path = 'app/model2.pkl'
 
 # if not Path(local_model_path).is_file():
 #     print("The model file does not exist. Loading file!")
@@ -46,7 +47,11 @@ local_model_path = 'app/model_2.h5'
 #     print("Model file loaded.")
 
 # # Load the model from the local file path
-model = tf.keras.models.load_model(local_model_path)
+# model = tf.keras.models.load_model(local_model_path)
+
+with open(local_model_path, 'rb') as f:
+    model = pickle.load(f)
+
 
 # Loading the pre-trained model
 class_list = ['Astrocitoma','Carcinoma','Ependimoma','Ganglioglioma','Germinoma','Glioblastoma','Granuloma','Meduloblastoma','Meningioma','Neurocitoma','Oligodendroglioma','Papiloma','Schwannoma','Tuberculoma','_NORMAL']
