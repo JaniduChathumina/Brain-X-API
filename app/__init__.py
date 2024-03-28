@@ -35,18 +35,18 @@ CORS(app)
 # app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
 
 
-local_model_path = 'model_2.h5'
+# local_model_path = 'model_2.h5'
 
-if not Path(local_model_path).is_file():
-    print("The model file does not exist. Loading file!")
-    # URL of the model file in Firebase Storage
-    model_url = 'https://firebasestorage.googleapis.com/v0/b/api-model-2f5ae.appspot.com/o/model_2.h5?alt=media&token=https://firebasestorage.googleapis.com/v0/b/api-model-2f5ae.appspot.com/o/model_2.h5?alt=media&token=c1883887-ea06-4373-a10e-a539f1cb82ac'
+# if not Path(local_model_path).is_file():
+#     print("The model file does not exist. Loading file!")
+#     # URL of the model file in Firebase Storage
+#     model_url = 'https://firebasestorage.googleapis.com/v0/b/api-model-2f5ae.appspot.com/o/model_2.h5?alt=media&token=https://firebasestorage.googleapis.com/v0/b/api-model-2f5ae.appspot.com/o/model_2.h5?alt=media&token=c1883887-ea06-4373-a10e-a539f1cb82ac'
 
-    local_model_path, _ = urlretrieve(model_url, "model_2.h5")
-    print("Model file loaded.")
+#     local_model_path, _ = urlretrieve(model_url, "model_2.h5")
+#     print("Model file loaded.")
 
-# Load the model from the local file path
-model = tf.keras.models.load_model(local_model_path)
+# # Load the model from the local file path
+# model = tf.keras.models.load_model(local_model_path)
 
 # Loading the pre-trained model
 class_list = ['Astrocitoma','Carcinoma','Ependimoma','Ganglioglioma','Germinoma','Glioblastoma','Granuloma','Meduloblastoma','Meningioma','Neurocitoma','Oligodendroglioma','Papiloma','Schwannoma','Tuberculoma','_NORMAL']
@@ -75,14 +75,17 @@ def predict():
         # img_path = 'astrocitoma.jpeg'
         processed_img = preprocess_image(img_path)
 
-        # Make a prediction using the loaded model
-        prediction = model.predict(processed_img)
+        # # Make a prediction using the loaded model
+        # prediction = model.predict(processed_img)
 
-        global most_likely_class 
-        most_likely_class = int(np.argmax(prediction))
-        result_label = class_list[most_likely_class]
-        result_value = prediction[0][most_likely_class]
-        result_value = round(result_value * 100, 2)
+        # global most_likely_class 
+        # most_likely_class = int(np.argmax(prediction))
+        # result_label = class_list[most_likely_class]
+        # result_value = prediction[0][most_likely_class]
+        # result_value = round(result_value * 100, 2)
+
+        result_label = 'Astrocitoma'
+        result_value = 0.99
 
         # Return the prediction as JSON
         return jsonify({'prediction': result_label,'confedience':str(result_value)+'%'})
