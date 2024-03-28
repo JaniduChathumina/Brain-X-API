@@ -1,1 +1,1 @@
-app/model2.pkl filter=lfs diff=lfs merge=lfs -text
+model_2.pkl filter=lfs diff=lfs merge=lfs -text

@@ -36,7 +36,7 @@ CORS(app)
 # app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
 
 
-local_model_path = 'app/model2.pkl'
+local_model_path = 'model_2.pkl'
 
 # if not Path(local_model_path).is_file():
 #     print("The model file does not exist. Loading file!")
