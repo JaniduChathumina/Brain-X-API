@@ -6,7 +6,6 @@ from keras.preprocessing import image
 from flask_cors import CORS
 import app.LimeExplainer as LimeExplainer 
 import app.GradCAMExplainer as GradCAMExplainer
-import traceback
 from flask_swagger_ui import get_swaggerui_blueprint
 from urllib.request import urlretrieve
 from pathlib import Path
@@ -36,7 +35,7 @@ CORS(app)
 # app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
 
 
-local_model_path = 'model_2.joblib'
+local_model_path = 'model_2.h5'
 
 # if not Path(local_model_path).is_file():
 #     print("The model file does not exist. Loading file!")
@@ -47,13 +46,13 @@ local_model_path = 'model_2.joblib'
 #     print("Model file loaded.")
 
 # # Load the model from the local file path
-# model = tf.keras.models.load_model(local_model_path)
+model = tf.keras.models.load_model(local_model_path)
 
 # with open(local_model_path, 'rb') as f:
 #     model = pickle.load(f)
 
-from joblib import load
-model = load(local_model_path)
+# from joblib import load
+# model = load(local_model_path)
 
 
 # Loading the pre-trained model
