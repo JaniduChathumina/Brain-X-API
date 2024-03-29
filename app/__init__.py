@@ -11,6 +11,7 @@ from urllib.request import urlretrieve
 from pathlib import Path
 import pickle
 from keras.models import load_model
+import requests
 
 app = Flask(__name__)
 CORS(app) 
@@ -49,20 +50,20 @@ CORS(app)
 # import requests
 
 # # URL of the file to download
-# model_url = 'https://firebasestorage.googleapis.com/v0/b/api-model-2f5ae.appspot.com/o/model_2.h5?alt=media&token=https://firebasestorage.googleapis.com/v0/b/api-model-2f5ae.appspot.com/o/model_2.h5?alt=media&token=c1883887-ea06-4373-a10e-a539f1cb82ac'
+model_url = 'https://firebasestorage.googleapis.com/v0/b/api-model-2f5ae.appspot.com/o/model_2.h5?alt=media&token=https://firebasestorage.googleapis.com/v0/b/api-model-2f5ae.appspot.com/o/model_2.h5?alt=media&token=c1883887-ea06-4373-a10e-a539f1cb82ac'
 
-# # Send a GET request to the URL
-# response = requests.get(model_url)
+# Send a GET request to the URL
+response = requests.get(model_url)
 
-# # Check if the request was successful
-# if response.status_code == 200:
-#     # Open a file in binary write mode
-#     with open('model_2.h5', 'wb') as file:
-#         # Write the binary content of the response to the file
-#         file.write(response.content)
-#     print("File downloaded successfully.-------------------------")
-# else:
-#     print("---------------------------Failed to download the file. Status code:", response.status_code)
+# Check if the request was successful
+if response.status_code == 200:
+    # Open a file in binary write mode
+    with open('model_2.h5', 'wb') as file:
+        # Write the binary content of the response to the file
+        file.write(response.content)
+    print("File downloaded successfully.-------------------------")
+else:
+    print("---------------------------Failed to download the file. Status code:", response.status_code)
 
 # # Load the model from the local file path
 model = load_model('model_2.h5')
