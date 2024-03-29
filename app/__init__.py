@@ -46,23 +46,23 @@ CORS(app)
 #     local_model_path, _ = urlretrieve(model_url, "model_2.h5")
 #     print("Model file loaded.")
 
-import requests
+# import requests
 
-# URL of the file to download
-model_url = 'https://firebasestorage.googleapis.com/v0/b/api-model-2f5ae.appspot.com/o/model_2.h5?alt=media&token=https://firebasestorage.googleapis.com/v0/b/api-model-2f5ae.appspot.com/o/model_2.h5?alt=media&token=c1883887-ea06-4373-a10e-a539f1cb82ac'
+# # URL of the file to download
+# model_url = 'https://firebasestorage.googleapis.com/v0/b/api-model-2f5ae.appspot.com/o/model_2.h5?alt=media&token=https://firebasestorage.googleapis.com/v0/b/api-model-2f5ae.appspot.com/o/model_2.h5?alt=media&token=c1883887-ea06-4373-a10e-a539f1cb82ac'
 
-# Send a GET request to the URL
-response = requests.get(model_url)
+# # Send a GET request to the URL
+# response = requests.get(model_url)
 
-# Check if the request was successful
-if response.status_code == 200:
-    # Open a file in binary write mode
-    with open('model_2.h5', 'wb') as file:
-        # Write the binary content of the response to the file
-        file.write(response.content)
-    print("File downloaded successfully.-------------------------")
-else:
-    print("---------------------------Failed to download the file. Status code:", response.status_code)
+# # Check if the request was successful
+# if response.status_code == 200:
+#     # Open a file in binary write mode
+#     with open('model_2.h5', 'wb') as file:
+#         # Write the binary content of the response to the file
+#         file.write(response.content)
+#     print("File downloaded successfully.-------------------------")
+# else:
+#     print("---------------------------Failed to download the file. Status code:", response.status_code)
 
 # # Load the model from the local file path
 model = load_model('model_2.h5')
@@ -114,42 +114,42 @@ def predict():
     except Exception as e:
         return jsonify({'error': str(e)})
 
-# # lime explanation text endpoint
-# @app.route('/limeExplanationText', methods=['GET'])
-# def limeExplanationText():
-#     try:
-#         lime_explainer = LimeExplainer.LimeExplainer()
-#         img_path = 'app/inputImage.jpeg' 
-#         fig, output_data = lime_explainer.explain_fn(img_path, model)
-#         return jsonify({'explanation':output_data})
+# lime explanation text endpoint
+@app.route('/limeExplanationText', methods=['GET'])
+def limeExplanationText():
+    try:
+        lime_explainer = LimeExplainer.LimeExplainer()
+        img_path = 'app/inputImage.jpeg' 
+        fig, output_data = lime_explainer.explain_fn(img_path, model)
+        return jsonify({'explanation':output_data})
 
-#     except Exception as e:
-#         return jsonify({'error': str(e)})
+    except Exception as e:
+        return jsonify({'error': str(e)})
 
-# # lime explanation image endpoint
-# @app.route('/limeExplanationImage', methods=['GET'])
-# def limeExplanationImage():
-#     try:
-#         lime_image_path = 'output_lime_image.jpeg'
-#         image_response = send_file(lime_image_path, mimetype='image/jpeg')
-#         return image_response
+# lime explanation image endpoint
+@app.route('/limeExplanationImage', methods=['GET'])
+def limeExplanationImage():
+    try:
+        lime_image_path = 'output_lime_image.jpeg'
+        image_response = send_file(lime_image_path, mimetype='image/jpeg')
+        return image_response
 
-#     except Exception as e:
-#         return jsonify({'error': str(e)})
+    except Exception as e:
+        return jsonify({'error': str(e)})
 
-# @app.route('/gradcamExplanation', methods=['GET'])
-# def gradcamExplanation():
-#     try:
-#         img_path = 'app/inputImage.jpeg'
-#         gradcam_explainer = GradCAMExplainer.GradCAMExplainer()
-#         heatmap = gradcam_explainer.explain_fn(img_path, most_likely_class, model, class_list)
-#         heatmap_image_path = 'heatmap.jpeg'
-#         heatmap_response = send_file(heatmap_image_path, mimetype='image/jpeg')
-#         return heatmap_response
+@app.route('/gradcamExplanation', methods=['GET'])
+def gradcamExplanation():
+    try:
+        img_path = 'app/inputImage.jpeg'
+        gradcam_explainer = GradCAMExplainer.GradCAMExplainer()
+        heatmap = gradcam_explainer.explain_fn(img_path, most_likely_class, model, class_list)
+        heatmap_image_path = 'heatmap.jpeg'
+        heatmap_response = send_file(heatmap_image_path, mimetype='image/jpeg')
+        return heatmap_response
     
-#     except Exception as e:
-#         print(traceback.format_exc())
-#         return jsonify({'error': str(e)})
+    except Exception as e:
+        # print(traceback.format_exc())
+        return jsonify({'error': str(e)})
     
 # # @app.route('/gradcamExplanationMask', methods=['GET'])
 # # def gradcamExplanationMask():
