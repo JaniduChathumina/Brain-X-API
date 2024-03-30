@@ -1,5 +1,4 @@
 from flask import Flask, request, jsonify, send_file, render_template
-from PIL import Image
 import numpy as np
 import tensorflow as tf
 from keras.preprocessing import image
@@ -7,11 +6,10 @@ from flask_cors import CORS
 import app.LimeExplainer as LimeExplainer 
 import app.GradCAMExplainer as GradCAMExplainer
 from flask_swagger_ui import get_swaggerui_blueprint
-from urllib.request import urlretrieve
 from pathlib import Path
-import pickle
 from keras.models import load_model
 import requests
+import cv2
 
 app = Flask(__name__)
 CORS(app) 
@@ -21,58 +19,44 @@ CORS(app)
 # #print("NumPy version:", np.__version__) #1.23.5
 
 
-# SWAGGER_URL = '/api/docs'  # URL for Swagger UI
-# API_URL = 'app/static/docs.json'  # URL for API documentation
+SWAGGER_URL = '/api/docs'  # URL for Swagger UI
+API_URL = '/static/docs.json'  # URL for API documentation
 
-# # Configuring Swagger UI to point API documentation
-# swaggerui_blueprint = get_swaggerui_blueprint(
-#     SWAGGER_URL,
-#     API_URL,
-#     config={
-#         'app_name': "BrainX API"
-#     }
-# )
+# Configuring Swagger UI to point API documentation
+swaggerui_blueprint = get_swaggerui_blueprint(
+    SWAGGER_URL,
+    API_URL,
+    config={
+        'app_name': "BrainX API"
+    }
+)
 
-# # Registering the Swagger UI blueprint with the flask app
-# app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
+# Registering the Swagger UI blueprint with the flask app
+app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
 
 
-# local_model_path = 'model_2.h5'
-
-# if not Path(local_model_path).is_file():
-#     print("The model file does not exist. Loading file!")
-#     # URL of the model file in Firebase Storage
-#     model_url = 'https://firebasestorage.googleapis.com/v0/b/api-model-2f5ae.appspot.com/o/model_2.h5?alt=media&token=https://firebasestorage.googleapis.com/v0/b/api-model-2f5ae.appspot.com/o/model_2.h5?alt=media&token=c1883887-ea06-4373-a10e-a539f1cb82ac'
-
-#     local_model_path, _ = urlretrieve(model_url, "model_2.h5")
-#     print("Model file loaded.")
-
-# import requests
+local_model_path = 'model_2.h5'
 
 # # URL of the file to download
 model_url = 'https://firebasestorage.googleapis.com/v0/b/api-model-2f5ae.appspot.com/o/model_2.h5?alt=media&token=https://firebasestorage.googleapis.com/v0/b/api-model-2f5ae.appspot.com/o/model_2.h5?alt=media&token=c1883887-ea06-4373-a10e-a539f1cb82ac'
 
-# Send a GET request to the URL
-response = requests.get(model_url)
+if not Path(local_model_path).is_file():
+    print("The model file does not exist. Downloading file!")
+    # Send a GET request to the URL
+    response = requests.get(model_url)
 
-# Check if the request was successful
-if response.status_code == 200:
-    # Open a file in binary write mode
-    with open('model_2.h5', 'wb') as file:
-        # Write the binary content of the response to the file
-        file.write(response.content)
-    print("File downloaded successfully.-------------------------")
-else:
-    print("---------------------------Failed to download the file. Status code:", response.status_code)
+    # Check if the request was successful
+    if response.status_code == 200:
+        # Open a file in binary write mode
+        with open('model_2.h5', 'wb') as file:
+            # Write the binary content of the response to the file
+            file.write(response.content)
+        print("File downloaded successfully.-------------------------")
+    else:
+        print("---------------------------Failed to download the file. Status code:", response.status_code)
 
 # # Load the model from the local file path
 model = load_model('model_2.h5')
-
-# with open(local_model_path, 'rb') as f:
-#     model = pickle.load(f)
-
-# from joblib import load
-# model = load(local_model_path)
 
 
 # Loading the pre-trained model
@@ -84,6 +68,40 @@ def preprocess_image(image_path):
     img = image.load_img(image_path, target_size=(600, 600))
     img = np.expand_dims(img, axis=0)
     return img
+
+
+def apply_clahe(input_image_path, output_image_path, clip_limit=2.0, tile_grid_size=(8, 8)):
+
+    # Load the input 2D JPEG image
+    input_image = cv2.imread(input_image_path, cv2.IMREAD_GRAYSCALE)
+
+    # Apply CLAHE for contrast enhancement
+    clahe = cv2.createCLAHE(clipLimit=clip_limit, tileGridSize=tile_grid_size)
+    output_image = clahe.apply(input_image)
+
+    # Save the enhanced 2D image as JPEG
+    cv2.imwrite(output_image_path, output_image)
+
+
+@app.route('/preprocess', methods=['POST'])
+def preprocess_clahe():
+    try:
+        # Get the image file from the request
+        file = request.files['file']
+        img_path = 'inputImage.jpeg'
+        file.save(img_path)
+
+        # Apply CLAHE to the image
+        output_image_path = 'clahe_output.jpeg'
+        apply_clahe(img_path,output_image_path)
+
+        # Return the preprocessed image
+        image_response = send_file(output_image_path, mimetype='image/jpeg')
+        return image_response
+
+    except Exception as e:
+        return jsonify({'error': str(e)})
+    
 
 ## default route for the home page
 @app.route('/')
